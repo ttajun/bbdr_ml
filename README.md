@@ -1,20 +1,23 @@
-# skelp_order
+# bbdr_ml
 
-skelp_order is python exectuable command for selenium crawling.
+bbdr_ml is python exectuable command for ML.
 
 ## Installation
 
-Use the package manager [pip](https://pip.pypa.io/en/stable/) to install skelp_order
+Use the package manager [pip](https://pip.pypa.io/en/stable/) to install bbdr_ml
 
 ```bash
-pip install skelp_order
+pip install bbdr-ml
 ```
 
 ## Usage
 
 ```console
-# execute
-[user@dev]$ skelp_order -h
+# create ML model
+[user@dev]$ bbdr_mmaker -h
+
+# Predict
+[user@dev]$ bbdr_predict -h
 ```
 
 ## Contributing
