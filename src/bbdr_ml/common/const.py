@@ -1,6 +1,10 @@
 
 class Const:
 
+    BOARD_BASIC = 'basic'
+    BOARDS = [BOARD_BASIC]
+
+    # legacy
     SITE_NAVER_NEWS = 'naverNews'
 
     CATEGORY_LIST = ['blog', 'cafe', 'community', 'news', 'shoppingmall', 'sns']

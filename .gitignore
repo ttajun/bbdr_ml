@@ -37,6 +37,7 @@ dist/
 **/*.order
 **/*.log.*
 **/*.pickle
+**/*.csv
 
 # result
 **/result/

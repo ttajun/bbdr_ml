@@ -1,4 +1,5 @@
 
+import os
 import argparse
 import re
 from enum import Enum
@@ -8,10 +9,11 @@ log = logger.make_logger(__name__)
 
 
 class ArgOpt(Enum):
+    TRAIN = 'train'
+    MODEL = 'model'
+    BOARD = 'board'
+    PREDICT = 'predict'
     DOMAIN = 'domain'
-    CATEGORY = 'category'
-    SITE = 'site'
-    KEYWORD = 'keyword'
     START = 'start'
     END = 'end'
 
@@ -19,46 +21,45 @@ class ArgOpt(Enum):
 def parse_args(desc, *args):
     parser = argparse.ArgumentParser(description=desc)
     o = ArgOpt
+    con = const.Const
 
     # setup arg options
     for arg in args:
         arg: ArgOpt
-        if arg == o.DOMAIN:
-            domains = list(const.Const.DOMAIN.keys())
-            help_domain = ','.join(domains)
-            parser.add_argument('-d', f'--{arg.value}', help=help_domain)
-
-        elif arg == o.START:
-            parser.add_argument('-s', f'--{arg.value}')
-
-        elif arg == o.END:
-            parser.add_argument('-e', f'--{arg.value}')
+        if arg == o.TRAIN:
+            parser.add_argument('-t', f'--{arg.value}')
+        elif arg == o.MODEL:
+            parser.add_argument('-m', f'--{arg.value}')
+        elif arg == o.BOARD:
+            help_board = ','.join(con.BOARDS)
+            parser.add_argument('-b', f'--{arg.value}', help=help_board)
 
     # parse arg options
     args_dict = vars(parser.parse_args())
-    args_keys = args_dict.keys()
 
+    # validation
     ret = {}
     for key, value in args_dict.items():
-        if key == o.DOMAIN.value:
-            ret[key] = _split_multi_args(value, domains)
-
-        elif key == o.START.value or key == o.END.value:
-            _check_date_format(key, value)
+        # print(f'key: {key}, value: {value}')
+        if key == o.TRAIN.value:
+            # 훈련데이터 파일확인
+            if not value or not os.path.isfile(value):
+                print(f'train csv is not exist. ({value})')
+                exit(1)
             ret[key] = value
 
-        else:
-            log.warn(f'unknown args: {key} ({value})')
+        elif key == o.MODEL.value:
+            if not value:
+                print(f'Model name must be set. use -m option.')
+                exit(1)
             ret[key] = value
 
-    # start and end
-    if o.START.value in args_keys and o.END.value in args_keys:
-        start = args_dict[o.START.value]
-        end = args_dict[o.END.value]
-        if start > end:
-            print(f'[ERROR] Start must have an earlier date than end. start: {start}, end: {end}')
-            exit(1)
-        
+        elif key == o.BOARD.value:
+            if not value or value not in help_board:
+                print(f'Select board in [{help_board}]. use -b option.')
+                exit(1)
+            ret[key] = value
+
     return ret
 
 

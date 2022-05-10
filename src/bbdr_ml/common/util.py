@@ -4,6 +4,7 @@ import json
 import pickle
 import textwrap
 import hashlib
+import re
 
 from datetime import datetime as dt, timedelta
 
@@ -54,6 +55,15 @@ def create_directory(directory):
             os.makedirs(directory)
     except OSError:
         log.error('Creating directory. ' +  directory)
+
+
+def only_hangul(text:str):
+    if text is None: return ''
+
+    try: ret = re.sub('[^A-Za-z0-9가-힣\.]', ' ', text)
+    except: ret = ''
+
+    return ret
 
 
 def remove_newline(text:str):
