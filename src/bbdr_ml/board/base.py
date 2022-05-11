@@ -46,6 +46,21 @@ class BoardBase:
         log.info(f'Step 4. 모델 생성')
         model = self._4_fit_model(X_data, Y_data, vocab_size)
 
+        self._save_model_vocab(model, vocab)
+
+
+    def _save_model_vocab(self, model, vocab):
+        o = args.ArgOpt
+        model_dir = f'{util.get_program_path()}/model'
+        util.create_directory(model_dir)
+
+        model_base = self.opts_val[o.MODEL.value]
+        model_path = f'{model_dir}/{model_base}.model'
+        vocab_path = f'{model_dir}/{model_base}.vocab'
+        model.save(model_path)
+        util.save_dictionary(vocab, vocab_path)
+
+
     def _1_load_data(self, train):
         return pd.read_csv(train, encoding='utf-8-sig')
 

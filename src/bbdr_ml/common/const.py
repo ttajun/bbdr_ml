@@ -4,6 +4,8 @@ class Const:
     BOARD_BASIC = 'basic'
     BOARDS = [BOARD_BASIC]
 
+    DEFAULT_PAD_LENGTH = 1000
+
     # legacy
     SITE_NAVER_NEWS = 'naverNews'
 

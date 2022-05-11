@@ -4,7 +4,7 @@ import argparse
 import re
 from enum import Enum
 
-from common import logger, const
+from common import logger, const, util
 log = logger.make_logger(__name__)
 
 
@@ -18,10 +18,11 @@ class ArgOpt(Enum):
     END = 'end'
 
 
-def parse_args(desc, *args):
+def parse_args(desc, file, *args):
     parser = argparse.ArgumentParser(description=desc)
     o = ArgOpt
     con = const.Const
+    print(f'file: {file}')
 
     # setup arg options
     for arg in args:
@@ -33,6 +34,8 @@ def parse_args(desc, *args):
         elif arg == o.BOARD:
             help_board = ','.join(con.BOARDS)
             parser.add_argument('-b', f'--{arg.value}', help=help_board)
+        elif arg == o.PREDICT:
+            parser.add_argument('-p', f'--{arg.value}')
 
     # parse arg options
     args_dict = vars(parser.parse_args())
@@ -41,24 +44,42 @@ def parse_args(desc, *args):
     ret = {}
     for key, value in args_dict.items():
         # print(f'key: {key}, value: {value}')
-        if key == o.TRAIN.value:
-            # 훈련데이터 파일확인
-            if not value or not os.path.isfile(value):
-                print(f'train csv is not exist. ({value})')
-                exit(1)
-            ret[key] = value
+        if 'mmaker' in file:
+            if key == o.TRAIN.value:
+                # 훈련데이터 파일확인
+                if not value or not os.path.isfile(value):
+                    print(f'train csv is not exist. ({value})')
+                    exit(1)
+                ret[key] = value
+        
+            elif key == o.BOARD.value:
+                if not value or value not in help_board:
+                    print(f'select board in [{help_board}]. use -b option.')
+                    exit(1)
+                ret[key] = value
 
-        elif key == o.MODEL.value:
-            if not value:
-                print(f'Model name must be set. use -m option.')
-                exit(1)
-            ret[key] = value
+            elif key == o.MODEL.value:
+                if not value:
+                    print(f'model name must be set. use -m option.')
+                    exit(1)
+                ret[key] = value
 
-        elif key == o.BOARD.value:
-            if not value or value not in help_board:
-                print(f'Select board in [{help_board}]. use -b option.')
-                exit(1)
-            ret[key] = value
+        else:
+            if key == o.PREDICT.value:
+                # 예측데이터 파일확인
+                if not value or not os.path.isfile(value):
+                    print(f'predict csv is not exist. ({value})')
+                    exit(1)
+                ret[key] = value
+
+            elif key == o.MODEL.value:
+                # 모델확인
+                model_path = f'{util.get_program_path()}/model/{value}.vocab'
+
+                if not value or not os.path.isfile(model_path):
+                    print(f'model is not exist. ({model_path})')
+                    exit(1)
+                ret[key] = value
 
     return ret
 

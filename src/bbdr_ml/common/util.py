@@ -100,3 +100,13 @@ def hash_uid(url):
     ret = hashlib.md5(tmp_uid).hexdigest()
     return ret
 
+
+def get_index_to_word(word_to_index):
+    # predict에서 정확히 정수인코딩이 되었는지 확인하기 위해
+    index_to_word={}
+    index_to_word[0] = ' '
+    for key, value in word_to_index.items():
+        index_to_word[value] = key
+
+    return index_to_word
+

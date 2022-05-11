@@ -15,7 +15,7 @@ def main():
 
     o = args.ArgOpt
     opts = [o.TRAIN, o.MODEL, o.BOARD]
-    opts_val = args.parse_args(f'BBDR - {util.get_program_name()}', *opts)
+    opts_val = args.parse_args(f'BBDR - {util.get_program_name()}', __file__, *opts)
 
     log.info('*'*75)
     log.info(f'tensorflow ver: {tf.__version__}')
